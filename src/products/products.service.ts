@@ -25,28 +25,32 @@ export class ProductsService {
 
       await this.productRepository.save(product);
 
-      return product;
+      return {
+        data: product,
+      };
     } catch (error) {
       this.handleDBException(error);
     }
   }
 
+  // Todo: realizar paginado
   async findAll() {
-    const products: Product[] = await this.productRepository.find();
-    return products;
+    const products: Product[] = await this.productRepository.find({});
+    return {
+      data: products,
+    };
   }
 
+  // Todo: aceptar mas parametros para que sea flexible la busqueda
   async findOne(id: string) {
     try {
       const product: Product = await this.productRepository.findOneByOrFail({
-        id: id,
+        id,
       });
-      if (!product) {
-        throw new NotFoundException();
-      }
-      return product;
+      return {
+        data: product,
+      };
     } catch (error) {
-      console.log(error);
       throw new NotFoundException();
     }
   }
@@ -55,8 +59,14 @@ export class ProductsService {
     return `This action updates a #${id} product`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async remove(id: string) {
+    const { data } = await this.findOne(id);
+    const response = await this.productRepository.remove(data);
+
+    return {
+      message: 'Removed succesfully',
+      data: response,
+    };
   }
 
   private handleDBException(error: any) {
