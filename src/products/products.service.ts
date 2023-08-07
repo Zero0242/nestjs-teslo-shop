@@ -150,6 +150,15 @@ export class ProductsService {
     };
   }
 
+  async deleteAllProducts() {
+    const query = this.productRepository.createQueryBuilder('product');
+    try {
+      return await query.delete().where({}).execute();
+    } catch (error) {
+      this.handleDBException(error);
+    }
+  }
+
   private handleDBException(error: any) {
     this.logger.error(error);
     if (error.code === '23505') throw new BadRequestException(error.detail);
