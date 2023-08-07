@@ -3,8 +3,10 @@ import {
   BeforeUpdate,
   Column,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { ProductImage } from './product-image.entity';
 
 @Entity()
 export class Product {
@@ -47,6 +49,11 @@ export class Product {
   @Column('text', { array: true, default: [] })
   tags: string[];
 
+  @OneToMany(() => ProductImage, (product) => product.product, {
+    cascade: true,
+  })
+  images?: ProductImage;
+
   @BeforeInsert()
   checkSlugInsert() {
     if (!this.slug) {
@@ -65,5 +72,4 @@ export class Product {
       .replaceAll(' ', '_')
       .replaceAll("'", '');
   }
-  // Todo: add tags and images
 }
