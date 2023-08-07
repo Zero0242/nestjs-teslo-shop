@@ -53,10 +53,15 @@ export class ProductsService {
     const products: Product[] = await this.productRepository.find({
       take: limit,
       skip: offset,
-      // Todo relaciones
+      relations: {
+        images: true,
+      },
     });
     return {
-      data: products,
+      data: products.map(({ images, ...productsAtributtes }) => ({
+        ...productsAtributtes,
+        images: images.map((image) => image.url),
+      })),
     };
   }
 
@@ -67,20 +72,28 @@ export class ProductsService {
     if (isUUID(term)) {
       product = await this.productRepository.findOneBy({ id: term });
     } else {
-      const queryBuilder = this.productRepository.createQueryBuilder();
+      const queryBuilder = this.productRepository.createQueryBuilder('prod');
       product = await queryBuilder
         .where('Upper(title) =:title or slug =:slug', {
           title: term.toUpperCase(),
           slug: term.toLowerCase(),
         })
+        .leftJoinAndSelect('prod.images', 'prodImages')
         .getOne();
     }
 
     if (!product)
       throw new NotFoundException('Producto con id ' + term + ' no encontrado');
 
+    return product;
+  }
+
+  async findOnePlain(term: string) {
+    const { images = [], ...rest } = await this.findOne(term);
+
     return {
-      data: product,
+      ...rest,
+      images: images.map((img) => img.url),
     };
   }
 
@@ -106,7 +119,7 @@ export class ProductsService {
   }
 
   async remove(id: string) {
-    const { data } = await this.findOne(id);
+    const data = await this.findOne(id);
     const response = await this.productRepository.remove(data);
 
     return {
