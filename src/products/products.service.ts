@@ -141,8 +141,8 @@ export class ProductsService {
   }
 
   async remove(id: string) {
-    const data = await this.findOne(id);
-    const response = await this.productRepository.remove(data);
+    const product = await this.findOne(id);
+    const response = await this.productRepository.remove(product);
 
     return {
       message: 'Removed succesfully',
