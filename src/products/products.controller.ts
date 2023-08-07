@@ -28,21 +28,21 @@ export class ProductsController {
     return this.productsService.findAll(paginationDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.productsService.findOne(id);
+  @Get(':term')
+  findOne(@Param('term') term: string) {
+    return this.productsService.findOne(term);
   }
 
-  @Patch(':id')
+  @Patch(':term')
   update(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('term') term: string,
     @Body() updateProductDto: UpdateProductDto,
   ) {
-    return this.productsService.update(+id, updateProductDto);
+    return this.productsService.update(+term, updateProductDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.productsService.remove(id);
+  @Delete(':term')
+  remove(@Param('term', ParseUUIDPipe) term: string) {
+    return this.productsService.remove(term);
   }
 }
