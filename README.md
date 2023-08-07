@@ -9,6 +9,8 @@
 $ docker-compose up -d
 ```
 
+5. Seed de database **/api/seed**
+
 ## Description
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
