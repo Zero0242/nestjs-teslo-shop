@@ -35,10 +35,10 @@ export class ProductsController {
 
   @Patch(':term')
   update(
-    @Param('term') term: string,
+    @Param('term', ParseUUIDPipe) term: string,
     @Body() updateProductDto: UpdateProductDto,
   ) {
-    return this.productsService.update(+term, updateProductDto);
+    return this.productsService.update(term, updateProductDto);
   }
 
   @Delete(':term')
