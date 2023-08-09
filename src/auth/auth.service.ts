@@ -3,8 +3,9 @@ import {
   ImATeapotException,
   Injectable,
   Logger,
+  UnauthorizedException,
 } from '@nestjs/common';
-import { CreateUserDto, UpdateUserDto } from './dto';
+import { CreateUserDto, LoginUserDto, UpdateUserDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -34,20 +35,18 @@ export class AuthService {
     }
   }
 
-  findAll() {
-    return `This action returns all auth`;
-  }
+  async login(loginUserDto: LoginUserDto) {
+    const { email, password } = loginUserDto;
+    const user = await this.userRepository.findOne({
+      where: { email },
+      select: { email: true, password: true },
+    });
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
+    const isInvalid = !bcrypt.compareSync(password, user.password) || !user;
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} auth`;
-  }
+    if (isInvalid) throw new UnauthorizedException('Credenciales no validas');
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+    return user;
   }
 
   private handleDBErrors(error: any) {
