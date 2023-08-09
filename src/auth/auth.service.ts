@@ -42,12 +42,14 @@ export class AuthService {
       select: { email: true, password: true },
     });
 
-    const isInvalid = !bcrypt.compareSync(password, user.password) || !user;
+    const isInvalid = !user || !bcrypt.compareSync(password, user.password);
 
     if (isInvalid) throw new UnauthorizedException('Credenciales no validas');
 
     return user;
   }
+
+  async validateToken() {}
 
   private handleDBErrors(error: any) {
     this.logger.error(error);
