@@ -1,8 +1,10 @@
+import { Product } from '../../products/entities/product.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
   Column,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 @Entity('users')
@@ -29,6 +31,9 @@ export class User {
   checkFields() {
     this.email = this.email.toLowerCase().trim();
   }
+
+  @OneToMany(() => Product, (product) => product.user)
+  product: Product;
 
   @BeforeUpdate()
   checkToUpdate() {

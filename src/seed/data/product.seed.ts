@@ -13,14 +13,84 @@ interface SeedProduct {
   gender: 'men' | 'women' | 'kid' | 'unisex';
 }
 
+interface SeedUser {
+  email: string;
+  fullName: string;
+  password: string;
+  roles: string[];
+}
+
 type ValidSizes = 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL' | 'XXXL';
 type ValidTypes = 'shirts' | 'pants' | 'hoodies' | 'hats';
 
 interface SeedData {
   products: SeedProduct[];
+  users: SeedUser[];
 }
 
 export const initialData: SeedData = {
+  users: [
+    {
+      email: 'istihsig@lok.fj',
+      fullName: 'Frederick Matthews',
+      password: '12345',
+      roles: ['admin'],
+    },
+    {
+      email: 'ga@ojihag.il',
+      fullName: 'Estelle Kelly',
+      password: '12345',
+      roles: ['user'],
+    },
+    {
+      email: 'vazimed@cuas.bj',
+      fullName: 'Leah Bryant',
+      password: '12345',
+      roles: ['user'],
+    },
+    {
+      email: 'cicni@cetruco.an',
+      fullName: 'Francisco Patterson',
+      password: '12345',
+      roles: ['user'],
+    },
+    {
+      email: 'ro@kolget.jp',
+      fullName: 'Alfred Gonzalez',
+      password: '12345',
+      roles: ['user'],
+    },
+    {
+      email: 'hig@lugku.tk',
+      fullName: 'Gary Caldwell',
+      password: '12345',
+      roles: ['user'],
+    },
+    {
+      email: 'infis@afu.mk',
+      fullName: 'Landon Clayton',
+      password: '12345',
+      roles: ['user'],
+    },
+    {
+      email: 'biuci@wab.dj',
+      fullName: 'Andre Houston',
+      password: '12345',
+      roles: ['user'],
+    },
+    {
+      email: 'ladhamuv@comahama.co.uk',
+      fullName: 'Brandon Diaz',
+      password: '12345',
+      roles: ['user'],
+    },
+    {
+      email: 'tog@la.pa',
+      fullName: 'Bertha Bennett',
+      password: '12345',
+      roles: ['user'],
+    },
+  ],
   products: [
     {
       description:
