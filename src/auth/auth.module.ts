@@ -28,12 +28,6 @@ import { JwtStrategy } from './strategy/jwt.strategy';
         };
       },
     }),
-    /* JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: {
-        expiresIn: '2h',
-      },
-    }), */
   ],
   exports: [TypeOrmModule, JwtStrategy, PassportModule, JwtModule],
 })
