@@ -42,7 +42,7 @@ export class AuthService {
     const { email, password } = loginUserDto;
     const user = await this.userRepository.findOne({
       where: { email },
-      select: { email: true, password: true },
+      select: { email: true, password: true, id: true },
     });
 
     const isInvalid = !user || !bcrypt.compareSync(password, user.password);
@@ -51,7 +51,7 @@ export class AuthService {
 
     return {
       data: user,
-      token: this.getJwtToken({ email: user.email }),
+      token: this.getJwtToken({ id: user.id }),
     };
   }
 
