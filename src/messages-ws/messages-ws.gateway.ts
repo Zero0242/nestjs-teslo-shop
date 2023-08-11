@@ -2,21 +2,30 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
   WebSocketGateway,
+  WebSocketServer,
 } from '@nestjs/websockets';
 import { MessagesWsService } from './messages-ws.service';
-import { Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
+import { Logger } from '@nestjs/common';
 
 @WebSocketGateway({ cors: true })
 export class MessagesWsGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
+  @WebSocketServer() wss: Server;
+
+  private readonly logger = new Logger('Socket');
   constructor(private readonly messagesWsService: MessagesWsService) {}
 
-  handleConnection(client: Socket, ...args: any[]) {
-    console.log('Cliente conectado: ' + client.id);
+  handleConnection(client: Socket) {
+    this.messagesWsService.registerClient(client);
+    this.wss.emit(
+      'clients-updated',
+      this.messagesWsService.getConnectedClients(),
+    );
   }
 
   handleDisconnect(client: Socket) {
-    console.log('Cliente desconectado: ' + client.id);
+    this.messagesWsService.removeClient(client.id);
   }
 }
