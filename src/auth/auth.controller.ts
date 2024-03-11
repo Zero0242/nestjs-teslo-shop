@@ -2,8 +2,10 @@ import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { LoginUserDTO, RegisterUserDTO } from './dto';
-import { GetUser } from './decorators';
+import { GetUser, RoleProtected } from './decorators';
 import { User } from 'src/entities';
+import { ValidRoles } from './interfaces';
+import { UserRoleGuard } from './guards';
 
 @Controller('auth')
 export class AuthController {
@@ -25,5 +27,14 @@ export class AuthController {
   @Post('register')
   registerUser(@Body() registerDTO: RegisterUserDTO) {
     return this.authService.registerUser(registerDTO);
+  }
+
+  /* Debug Request */
+
+  @RoleProtected(ValidRoles.admin)
+  @UseGuards(AuthGuard(), UserRoleGuard)
+  @Get('protected')
+  adminRequest() {
+    return 'request solo para admin';
   }
 }

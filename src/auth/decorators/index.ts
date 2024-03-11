@@ -1,1 +1,2 @@
-export * from './get-user.dto';
+export * from './get-user.decorator';
+export * from './role-protected.decorator';
