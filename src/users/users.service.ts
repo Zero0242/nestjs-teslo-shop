@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
 import { User } from 'src/entities';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 @Injectable()
 export class UsersService {
@@ -16,6 +17,10 @@ export class UsersService {
 
   saveUser(user: User) {
     return this.userRepository.save(user);
+  }
+
+  updateUser(id: string, partialData: QueryDeepPartialEntity<User>) {
+    return this.userRepository.update(id, partialData);
   }
 
   findById(id: string) {

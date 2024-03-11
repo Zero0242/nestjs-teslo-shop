@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginUserDTO, RegisterUserDTO } from './dto';
+import { LoginUserDTO, RegisterUserDTO, UpdateUserDto } from './dto';
 import { GetUser, UseAuth } from './decorators';
 import { ValidRoles } from './interfaces';
 import { User } from 'src/entities';
@@ -25,6 +25,12 @@ export class AuthController {
   @Post('register')
   registerUser(@Body() registerDTO: RegisterUserDTO) {
     return this.authService.registerUser(registerDTO);
+  }
+
+  @UseAuth()
+  @Put('edit')
+  updateUser(@GetUser() user: User, @Body() updateDTO: UpdateUserDto) {
+    return this.authService.updateUser(user, updateDTO);
   }
 
   /* Debug Request */

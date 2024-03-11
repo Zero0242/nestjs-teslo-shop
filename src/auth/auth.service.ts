@@ -7,8 +7,9 @@ import {
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users';
-import { LoginUserDTO, RegisterUserDTO } from './dto';
+import { LoginUserDTO, RegisterUserDTO, UpdateUserDto } from './dto';
 import { JwtPayload } from './interfaces';
+import { User } from 'src/entities';
 
 @Injectable()
 export class AuthService {
@@ -42,6 +43,25 @@ export class AuthService {
         throw new BadRequestException('Email ya en uso');
       throw new InternalServerErrorException('Consulte con el admin');
     }
+  }
+
+  async updateUser(user: User, updateDTO: UpdateUserDto) {
+    const values = Object.entries(updateDTO);
+
+    if (values.length === 0) {
+      throw new BadRequestException('No se pudo actualizar');
+    }
+    const { id } = user;
+    const { affected = 0 } = await this.usersService.updateUser(id, updateDTO);
+    if (affected === 0) {
+      throw new InternalServerErrorException('No se pudo actualizar');
+    }
+    return {
+      ...user,
+      username: updateDTO.username ?? user.username,
+      birthday: updateDTO.birthday ?? user.birthday,
+      phone: updateDTO.phone ?? user.phone,
+    };
   }
 
   signToken(payload: JwtPayload) {
