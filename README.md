@@ -1,10 +1,43 @@
 ## Description
 
+[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+
 - Remake de un proyecto de nestjs, para recordar las bases
 
-## Description
+## Dependencies
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+1. **DATABASE deps**
+
+```bash
+@nestjs/typeorm typeorm pg
+```
+
+2. **NESTJS deps**
+
+```bash
+@nestjs/config
+```
+
+3. **HASHING deps**
+
+```bash
+bcrypt
+@types/bcrypt
+```
+
+4. **VALIDATION deps**
+
+```bash
+class-validator class-transformer
+```
+
+5. **JWT deps**
+
+```bash
+@nestjs/passport @nestjs/jwt
+passport passport-local passport-jwt
+@types/passport-local @types/passport-jwt
+```
 
 ## Installation
 
@@ -37,16 +70,6 @@ $ yarn run test:e2e
 # test coverage
 $ yarn run test:cov
 ```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
 
 ## License
 
