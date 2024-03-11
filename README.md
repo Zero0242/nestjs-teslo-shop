@@ -16,6 +16,7 @@
 
 ```bash
 @nestjs/config
+@nestjs/serve-static
 ```
 
 3. **HASHING deps**
