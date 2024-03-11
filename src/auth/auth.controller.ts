@@ -1,7 +1,9 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { LoginUserDTO, RegisterUserDTO } from './dto';
-import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from './decorators';
+import { User } from 'src/entities';
 
 @Controller('auth')
 export class AuthController {
@@ -9,10 +11,10 @@ export class AuthController {
 
   @UseGuards(AuthGuard())
   @Get('login')
-  validateUser(@Req() req) {
-    console.log({ data: req });
-
-    return 'TODO: implementar login x token';
+  validateUser(@GetUser() user: User) {
+    const token = this.authService.signToken({ id: user.id });
+    delete user.password;
+    return { user, token };
   }
 
   @Post('login')
