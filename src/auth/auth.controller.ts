@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDTO, RegisterUserDTO } from './dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -9,7 +9,9 @@ export class AuthController {
 
   @UseGuards(AuthGuard())
   @Get('login')
-  validateUser() {
+  validateUser(@Req() req) {
+    console.log({ data: req });
+
     return 'TODO: implementar login x token';
   }
 
