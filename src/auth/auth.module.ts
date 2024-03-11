@@ -25,5 +25,7 @@ import { UsersModule } from 'src/users';
   ],
   providers: [AuthService, JWTStrategy],
   controllers: [AuthController],
+  // * Para el uso de AUTHGUARD en otros lados
+  exports: [PassportModule],
 })
 export class AuthModule {}
