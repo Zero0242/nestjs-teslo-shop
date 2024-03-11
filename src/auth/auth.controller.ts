@@ -1,17 +1,15 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDTO, RegisterUserDTO } from './dto';
-import { GetUser, RoleProtected } from './decorators';
-import { User } from 'src/entities';
+import { GetUser, UseAuth } from './decorators';
 import { ValidRoles } from './interfaces';
-import { UserRoleGuard } from './guards';
+import { User } from 'src/entities';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(AuthGuard())
+  @UseAuth()
   @Get('login')
   validateUser(@GetUser() user: User) {
     const token = this.authService.signToken({ id: user.id });
@@ -31,8 +29,7 @@ export class AuthController {
 
   /* Debug Request */
 
-  @RoleProtected(ValidRoles.admin)
-  @UseGuards(AuthGuard(), UserRoleGuard)
+  @UseAuth(ValidRoles.superUser)
   @Get('protected')
   adminRequest() {
     return 'request solo para admin';
