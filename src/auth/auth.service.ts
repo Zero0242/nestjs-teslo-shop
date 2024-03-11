@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
@@ -28,15 +29,19 @@ export class AuthService {
   }
 
   async registerUser(registerDTO: RegisterUserDTO) {
-    const { email, password } = registerDTO;
-    const userFound = await this.usersService.findByEmail(email);
-    if (userFound) throw new BadRequestException('Usuario ya registrado');
-    registerDTO.password = bcrypt.hashSync(password, 10);
-    const user = this.usersService.createUser(registerDTO);
-    await this.usersService.saveUser(user);
-    const token = this.signToken({ id: user.id });
-    delete user.password;
-    return { user, token };
+    try {
+      const { password } = registerDTO;
+      registerDTO.password = bcrypt.hashSync(password, 10);
+      const user = this.usersService.createUser(registerDTO);
+      await this.usersService.saveUser(user);
+      const token = this.signToken({ id: user.id });
+      delete user.password;
+      return { user, token };
+    } catch (error) {
+      if (error.code === '23505')
+        throw new BadRequestException('Email ya en uso');
+      throw new InternalServerErrorException('Consulte con el admin');
+    }
   }
 
   signToken(payload: JwtPayload) {
