@@ -16,7 +16,7 @@ export class User {
   @Column('text', { unique: true })
   email: string;
 
-  @Column('text', { nullable: true })
+  @Column('text', { default: '' })
   phone: string;
 
   @Column('date', { nullable: true })
