@@ -29,7 +29,7 @@ export class ProductsController {
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+  async findOne(@Param('id') id: string) {
     const product = await this.productsService.findOne(id);
     if (!product) {
       throw new NotFoundException(`Producto con id: ${id} no encontrado`);
