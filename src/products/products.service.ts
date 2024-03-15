@@ -42,8 +42,10 @@ export class ProductsService {
     return `This action updates a #${id} product`;
   }
 
-  remove(id: string) {
-    return this.productRepository.delete(id);
+  async remove(id: string) {
+    const { affected = 0 } = await this.productRepository.delete(id);
+    const ok = affected !== 0;
+    return { ok, message: ok ? 'Eliminado con exito' : 'No encontrado' };
   }
 
   private handleException(error: any) {

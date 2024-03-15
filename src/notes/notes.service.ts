@@ -28,7 +28,9 @@ export class NotesService {
     return `This action updates a #${id} note`;
   }
 
-  remove(id: string) {
-    return this.notesRepository.delete(id);
+  async remove(id: string) {
+    const { affected = 0 } = await this.notesRepository.delete(id);
+    const ok = affected !== 0;
+    return { ok, message: ok ? 'Eliminado con exito' : 'No encontrado' };
   }
 }
