@@ -8,9 +8,11 @@ import {
   Delete,
   ParseUUIDPipe,
   NotFoundException,
+  Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto, UpdateProductDto } from './dto';
+import { PaginationDto } from 'src/common/dtos';
 
 @Controller('products')
 export class ProductsController {
@@ -22,8 +24,8 @@ export class ProductsController {
   }
 
   @Get()
-  findAll() {
-    return this.productsService.findAll();
+  findAll(@Query() paginationDTO: PaginationDto) {
+    return this.productsService.findAll(paginationDTO);
   }
 
   @Get(':id')

@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from 'src/entities';
 import { CreateProductDto, UpdateProductDto } from './dto';
+import { PaginationDto } from 'src/common/dtos';
 
 @Injectable()
 export class ProductsService {
@@ -28,8 +29,13 @@ export class ProductsService {
     }
   }
 
-  findAll() {
-    return this.productRepository.find({});
+  findAll(paginationDTO: PaginationDto) {
+    const { limit = 10, offset = 0 } = paginationDTO;
+    return this.productRepository.find({
+      take: limit,
+      skip: offset,
+      // TODO: relaciones
+    });
   }
 
   findOne(id: string) {
