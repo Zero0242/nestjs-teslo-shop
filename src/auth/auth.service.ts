@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
@@ -13,6 +14,7 @@ import { User } from 'src/entities';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger('Auth Service');
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
@@ -39,6 +41,7 @@ export class AuthService {
       delete user.password;
       return { user, token };
     } catch (error) {
+      this.logger.error(error);
       if (error.code === '23505')
         throw new BadRequestException('Email ya en uso');
       throw new InternalServerErrorException('Consulte con el admin');

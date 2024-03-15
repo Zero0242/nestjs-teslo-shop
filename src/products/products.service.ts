@@ -11,7 +11,7 @@ import { CreateProductDto, UpdateProductDto } from './dto';
 
 @Injectable()
 export class ProductsService {
-  private readonly logger = new Logger('Product Service');
+  private readonly logger = new Logger('ProductService');
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
@@ -24,12 +24,12 @@ export class ProductsService {
 
       return product;
     } catch (error) {
-      this.errorHandler(error);
+      this.handleException(error);
     }
   }
 
   findAll() {
-    return `This action returns all products`;
+    return this.productRepository.find({});
   }
 
   findOne(id: number) {
@@ -44,10 +44,10 @@ export class ProductsService {
     return `This action removes a #${id} product`;
   }
 
-  private errorHandler(error: any) {
+  private handleException(error: any) {
     this.logger.error(error);
     if (error.code === '23505')
-      throw new BadRequestException('Producto ya existe');
+      throw new BadRequestException(`Ha ocurrido un error: ${error.detail}`);
     throw new InternalServerErrorException('Llama al admin');
   }
 }
