@@ -8,7 +8,7 @@ import {
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate as isUUID } from 'uuid';
-import { Product } from 'src/entities';
+import { Product, ProductImage } from 'src/entities';
 import { PaginationDto } from 'src/common/dtos';
 import { CreateProductDto, UpdateProductDto } from './dto';
 
@@ -18,10 +18,19 @@ export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    @InjectRepository(ProductImage)
+    private readonly productImageRespository: Repository<ProductImage>,
   ) {}
+
   async create(createProductDto: CreateProductDto) {
     try {
-      const product = this.productRepository.create(createProductDto);
+      const { images = [], ...rest } = createProductDto;
+      const product = this.productRepository.create({
+        ...rest,
+        images: images.map((image) =>
+          this.productImageRespository.create({ url: image }),
+        ),
+      });
 
       await this.productRepository.save(product);
 
@@ -31,13 +40,18 @@ export class ProductsService {
     }
   }
 
-  findAll(paginationDTO: PaginationDto) {
+  async findAll(paginationDTO: PaginationDto) {
     const { limit = 10, offset = 0 } = paginationDTO;
-    return this.productRepository.find({
+    const products = await this.productRepository.find({
       take: limit,
       skip: offset,
-      // TODO: relaciones
+      relations: { images: true },
     });
+
+    return products.map((product) => ({
+      ...product,
+      images: product.getPlainImages(),
+    }));
   }
 
   async findOne(term: string) {
@@ -46,14 +60,17 @@ export class ProductsService {
       product = await this.productRepository.findOne({ where: { id: term } });
     } else {
       //product = await this.productRepository.findOne({ where: { slug: term } });
-      // * Query builder, modo manual para las querys SQL
-      const queryBuilder = this.productRepository.createQueryBuilder();
+      // * Query builder, modo manual para las querys SQL + Alias de la tabla
+      const queryBuilder =
+        this.productRepository.createQueryBuilder('products');
 
       product = await queryBuilder
         .where('UPPER(title) =:title or slug =:slug', {
           title: term.toUpperCase(),
           slug: term.toLowerCase(),
         })
+        // * Para hacer el join con la tabla imagenes
+        .leftJoinAndSelect('products.images', 'prodImages')
         .getOne();
     }
 
@@ -61,7 +78,7 @@ export class ProductsService {
       throw new NotFoundException(`Product with term: ${term} not found`);
     }
 
-    return product;
+    return { ...product, images: product.getPlainImages() };
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
@@ -69,6 +86,7 @@ export class ProductsService {
     const product = await this.productRepository.preload({
       id,
       ...updateProductDto,
+      images: [],
     });
 
     if (!product) {
