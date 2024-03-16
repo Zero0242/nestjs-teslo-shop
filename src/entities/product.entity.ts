@@ -3,8 +3,10 @@ import {
   BeforeUpdate,
   Column,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { ProductImage } from './product-image.entity';
 
 @Entity()
 export class Product {
@@ -36,7 +38,12 @@ export class Product {
   @Column('text', { array: true, default: [] })
   tags: string[];
 
+  // * Relaciones con otras tablas
   // images
+  @OneToMany(() => ProductImage, (productimage) => productimage.product, {
+    cascade: true,
+  })
+  images?: ProductImage[];
 
   // * Interceptores de insercion
   @BeforeInsert()
@@ -52,5 +59,10 @@ export class Product {
   @BeforeUpdate()
   updateSlug() {
     this.createSlug();
+  }
+
+  // * Metodos personalizados
+  getPlainImages(): string[] {
+    return this.images.map((image) => image.url);
   }
 }
