@@ -5,7 +5,7 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate as isUUID } from 'uuid';
 import { Product, ProductImage } from 'src/entities';
@@ -20,6 +20,7 @@ export class ProductsService {
     private readonly productRepository: Repository<Product>,
     @InjectRepository(ProductImage)
     private readonly productImageRespository: Repository<ProductImage>,
+    private readonly datasource: DataSource,
   ) {}
 
   async create(createProductDto: CreateProductDto) {
@@ -81,23 +82,42 @@ export class ProductsService {
     return { ...product, images: product.getPlainImages() };
   }
 
+  // QUERY RUNNER, MODO SQL
   async update(id: string, updateProductDto: UpdateProductDto) {
+    const { images, ...partial } = updateProductDto;
     // * Precarga el product con el id, junto a los parametros que le pasamos
-    const product = await this.productRepository.preload({
-      id,
-      ...updateProductDto,
-      images: [],
-    });
+    const product = await this.productRepository.preload({ id, ...partial });
 
     if (!product) {
       throw new NotFoundException(`Producto con id: ${id} no encontrado`);
     }
 
+    // * Crear query runner
+    const runner = this.datasource.createQueryRunner();
+    await runner.connect();
+    await runner.startTransaction();
+
     try {
       // * Guardando desde el save
-      await this.productRepository.save(product);
-      return product;
+
+      if (images) {
+        // * Borra todos los products, con id id
+        await runner.manager.delete(ProductImage, { product: { id } });
+        product.images = images.map((image) =>
+          this.productImageRespository.create({ url: image }),
+        );
+      } else {
+      }
+
+      // * Intentar grabar el producto
+      await runner.manager.save(product);
+      // * Tira la transaccion
+      await runner.commitTransaction();
+      // * Nos desconecta
+      await runner.release();
+      return this.findOne(id);
     } catch (error) {
+      await runner.rollbackTransaction();
       this.handleException(error);
     }
   }
