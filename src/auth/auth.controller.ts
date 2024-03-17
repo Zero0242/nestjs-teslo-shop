@@ -41,12 +41,4 @@ export class AuthController {
   updateUser(@GetUser() user: User, @Body() updateDTO: UpdateUserDto) {
     return this.authService.updateUser(user, updateDTO);
   }
-
-  /* Debug Request */
-
-  @UseAuth(ValidRoles.superUser)
-  @Get('protected')
-  adminRequest() {
-    return 'request solo para admin';
-  }
 }

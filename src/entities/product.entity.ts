@@ -1,5 +1,6 @@
 import {
   BeforeInsert,
+  BeforeRemove,
   BeforeUpdate,
   Column,
   Entity,
@@ -65,6 +66,13 @@ export class Product {
   @BeforeUpdate()
   updateSlug() {
     this.createSlug();
+  }
+
+  @BeforeRemove()
+  cleanData(){
+    for (const image of this.images) {
+      image.cleanImage()
+    }
   }
 
   // * Metodos personalizados

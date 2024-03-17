@@ -10,6 +10,6 @@ export class FilesService {
     if (!existsSync(path)) {
       throw new BadRequestException('Image not found');
     }
-    return  path
+    return path;
   }
 }
