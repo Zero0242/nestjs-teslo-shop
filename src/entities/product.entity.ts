@@ -48,7 +48,7 @@ export class Product {
   })
   images?: ProductImage[];
 
-  @ManyToOne(() => User, (user) => user.products)
+  @ManyToOne(() => User, (user) => user.products, { eager: true })
   user: User;
 
   // * Interceptores de insercion

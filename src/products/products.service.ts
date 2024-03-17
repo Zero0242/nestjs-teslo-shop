@@ -8,7 +8,7 @@ import {
 import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate as isUUID } from 'uuid';
-import { Product, ProductImage } from 'src/entities';
+import { Product, ProductImage, User } from 'src/entities';
 import { PaginationDto } from 'src/common/dtos';
 import { CreateProductDto, UpdateProductDto } from './dto';
 
@@ -23,11 +23,12 @@ export class ProductsService {
     private readonly datasource: DataSource,
   ) {}
 
-  async create(createProductDto: CreateProductDto) {
+  async create(createProductDto: CreateProductDto, user: User) {
     try {
       const { images = [], ...rest } = createProductDto;
       const product = this.productRepository.create({
         ...rest,
+        user,
         images: images.map((image) =>
           this.productImageRespository.create({ url: image }),
         ),
@@ -83,7 +84,7 @@ export class ProductsService {
   }
 
   // QUERY RUNNER, MODO SQL
-  async update(id: string, updateProductDto: UpdateProductDto) {
+  async update(id: string, updateProductDto: UpdateProductDto, user: User) {
     const { images, ...partial } = updateProductDto;
     // * Precarga el product con el id, junto a los parametros que le pasamos
     const product = await this.productRepository.preload({ id, ...partial });
@@ -106,8 +107,8 @@ export class ProductsService {
         product.images = images.map((image) =>
           this.productImageRespository.create({ url: image }),
         );
-      } else {
       }
+      product.user = user;
 
       // * Intentar grabar el producto
       await runner.manager.save(product);
@@ -122,7 +123,11 @@ export class ProductsService {
     }
   }
 
-  async remove(id: string) {
+  async remove(id: string, user: User) {
+    const product = await this.findOne(id);
+    if (product.user.id !== user.id) {
+      throw new BadRequestException('No se puede completar esta operacion');
+    }
     const { affected = 0 } = await this.productRepository.delete(id);
     const ok = affected !== 0;
     return { ok, message: ok ? 'Eliminado con exito' : 'No encontrado' };
