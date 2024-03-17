@@ -1,0 +1,10 @@
+products/*.jpeg
+uploads/*.jpeg
+
+
+products/*.jpg
+uploads/*.jpg
+products/*.png
+uploads/*.png
+products/*.gif
+uploads/*.gif
