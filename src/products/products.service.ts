@@ -139,15 +139,4 @@ export class ProductsService {
       throw new BadRequestException(`Ha ocurrido un error: ${error.detail}`);
     throw new InternalServerErrorException('Llama al admin');
   }
-
-  // ! FUNCION DESTRUCTORA
-  async deleteAll() {
-    const query = this.productRepository.createQueryBuilder('product');
-
-    try {
-      return await query.delete().where({}).execute();
-    } catch (error) {
-      this.handleException(error);
-    }
-  }
 }

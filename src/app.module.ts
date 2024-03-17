@@ -7,7 +7,6 @@ import { AuthModule } from './auth/auth.module';
 import { NotesModule } from './notes/notes.module';
 import { ProductsModule } from './products/products.module';
 import { CommonModule } from './common/common.module';
-import { SeedModule } from './seed/seed.module';
 import { FilesModule } from './files/files.module';
 
 @Module({
@@ -33,7 +32,6 @@ import { FilesModule } from './files/files.module';
     ProductsModule,
     CommonModule,
     FilesModule,
-    SeedModule,
   ],
   controllers: [],
   providers: [],
