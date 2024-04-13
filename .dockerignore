@@ -1,0 +1,18 @@
+# Node
+node_modules/
+dist/
+
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yaml
+
+# OS
+.DS_Store
+.vscode/
+
+# git
+.gitignore
+README.md
+.git
