@@ -1,3 +1,11 @@
+# Docker
+
+Para realizar el build del docker compose 
+
+```bash
+docker compose build
+```
+
 ## Description
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
