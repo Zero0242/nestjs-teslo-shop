@@ -24,7 +24,13 @@ docker build \
 Para construir la imagen con buildx
 
 ```bash
-docker builx build \
+docker buildx create <super-builder>
+docker buildx use <super-builder>
+docker buildx rm <super-builder>
+```
+
+```bash
+docker buildx build \
 --platform linux/amd64,linux/arm64 \
 --tag <user>/<image>:<tag> \
 --push .
