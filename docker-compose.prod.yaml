@@ -4,19 +4,16 @@ services:
   app:
     container_name: nest_app
     build:
-      # Ubicacion del dockerfile 
       context: .
-      # Especificar el nombre del dockerfil 
-      dockerfile: Dockerfile.dev
-      # Etapa
+      dockerfile: Dockerfile
       target: ${STAGE}
-    # Para correr comandos en este contenedor
-    # command: yarn start:dev
+    # tag para nuestro container
+    image: zero0242/nest-teslo-app:1.0.1
+    restart: always
+    depends_on:
+      - database
     ports:
       - "3000:3000"
-    volumes:
-      - ./:/app
-      - /app/node_modules
 
     environment:
       PORT: ${PORT}
@@ -30,7 +27,6 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
       JWT_DURATION: ${JWT_DURATION}
-
   database:
     container_name: posgresdb
     image: postgres:15.1

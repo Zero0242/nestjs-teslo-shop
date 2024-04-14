@@ -4,11 +4,16 @@ Para realizar el build del docker compose
 
 ```bash
 docker compose build
+docker compose -f docker-compose.prod.yaml build
+```
+
+Para correr la app de un compose en especial
+
+```bash
+docker-compose -f docker-compose.prod.yaml up
 ```
 
 ## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
 - Remake de un proyecto de nestjs, para recordar las bases
 
