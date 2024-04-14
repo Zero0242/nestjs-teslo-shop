@@ -13,6 +13,23 @@ Para correr la app de un compose en especial
 docker-compose -f docker-compose.prod.yaml up
 ```
 
+Para construir la imagen
+
+```bash
+docker build \
+--tag <user>/<image>:<tag> \
+--push .
+```
+
+Para construir la imagen con buildx
+
+```bash
+docker builx build \
+--platform linux/amd64,linux/arm64 \
+--tag <user>/<image>:<tag> \
+--push .
+```
+
 ## Description
 
 - Remake de un proyecto de nestjs, para recordar las bases
