@@ -72,19 +72,26 @@ $ yarn run start:dev
 $ yarn run start:prod
 ```
 
-## Test
 
-```bash
-# unit tests
-$ yarn run test
+## Docker Image
 
-# e2e tests
-$ yarn run test:e2e
+# Imagen de un backend de nestjs
 
-# test coverage
-$ yarn run test:cov
-```
+La imagen tiene estas variables
 
-## License
+| Variable | Ejemplo | Descripción |
+| --- | --- | --- |
+| PORT | 3000 | El puerto en el que va a correr la app |
+| HOST_URL | http ://localhost:3000/api| El url completo del api |
+| APP_VERSION | 1.0.0 | La version de al app |
+| STAGE | DEV | dev , prod, staging |
+| DB_HOST | localhost | host de la base de datos |
+| DB_PORT | 5432 | puerto de la base de datos |
+| DB_NAME | nest-db| nombre de la base de datos |
+| DB_USERNAME | postgres | usuario de la base de datos |
+| DB_PASSWORD | 12345 | contraseña de la base de datos |
+| JWT_SECRET | averyrandomstring | seed para el jwt |
+| JWT_DURATION | 10h | duracion del token |
 
-Nest is [MIT licensed](LICENSE).
+
+Los archivos de la app se alojan en `/app`, dentro de estas se encuentran la carpeta `public` y `static` para los archivos
