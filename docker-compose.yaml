@@ -1,36 +1,6 @@
 version: "3"
 
 services:
-  app:
-    container_name: nest_app
-    build:
-      # Ubicacion del dockerfile 
-      context: .
-      # Especificar el nombre del dockerfil 
-      dockerfile: Dockerfile.dev
-      # Etapa
-      target: ${STAGE}
-    # Para correr comandos en este contenedor
-    # command: yarn start:dev
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./:/app
-      - /app/node_modules
-
-    environment:
-      PORT: ${PORT}
-      HOST_URL: ${HOST_URL}
-      APP_VERSION: ${APP_VERSION}
-      STAGE: ${STAGE}
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-      DB_NAME: ${DB_NAME}
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
-      JWT_SECRET: ${JWT_SECRET}
-      JWT_DURATION: ${JWT_DURATION}
-
   database:
     container_name: posgresdb
     image: postgres:15.1

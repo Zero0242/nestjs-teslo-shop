@@ -18,9 +18,9 @@ export class UserRoleGuard implements CanActivate {
   // * reflector para lectura de metadata
   constructor(private readonly reflector: Reflector) {}
   canActivate(context: ExecutionContext): GuardReturn {
-    const validRoles: string[] = this.reflector.get(
+    const validRoles: string[] = this.reflector.getAllAndOverride(
       META_ROLES,
-      context.getHandler(),
+      [context.getHandler(),context.getClass()],
     );
 
     // * Validacion del array del decorator
