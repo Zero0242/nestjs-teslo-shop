@@ -28,3 +28,4 @@ static/products/*.png
 static/uploads/*.png
 static/products/*.gif
 static/uploads/*.gif
+package-lock.json

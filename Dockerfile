@@ -1,21 +1,23 @@
-FROM node:19.2-alpine3.16 as dependencies
+FROM node:23-alpine as dependencies
 WORKDIR /app
 COPY package.json .
-RUN npm install
+COPY yarn.lock .
+RUN yarn install
 
-FROM node:19.2-alpine3.16 as builder
+FROM node:23-alpine as builder
 WORKDIR /app
 COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
 # RUN yarn test
 RUN yarn build
 
-FROM node:19.2-alpine3.16 as prod-dependencies
+FROM node:23-alpine as prod-dependencies
 WORKDIR /app
 COPY package.json .
-RUN npm install --prod
+COPY yarn.lock .
+RUN yarn install --prod
 
-FROM node:19.2-alpine3.16 as apprunner
+FROM node:23-alpine as apprunner
 EXPOSE 3000
 ENV APP_VERSION=${APP_VERSION}
 WORKDIR /app

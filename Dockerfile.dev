@@ -1,5 +1,5 @@
 # Fase para desarrollo
-FROM node:19.2-alpine3.16 as appwatcher
+FROM node:23-alpine as appwatcher
 WORKDIR /app
 COPY package.json .
 RUN npm install

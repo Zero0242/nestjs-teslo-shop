@@ -7,20 +7,16 @@ import {
 	Res,
 	UploadedFile,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { MulterUpload } from 'src/common/decorators';
-import { FileType } from 'src/common/helpers';
+import { envs, FileType } from 'src/common/helpers';
 import { FilesService } from './files.service';
 
 @ApiTags('files')
 @Controller('files')
 export class FilesController {
-	constructor(
-		private readonly filesService: FilesService,
-		private readonly configService: ConfigService,
-	) {}
+	constructor(private readonly filesService: FilesService) {}
 
 	@Get('product/:imageName')
 	findOneImage(@Param('imageName') imageName: string, @Res() res: Response) {
@@ -37,8 +33,7 @@ export class FilesController {
 	uploadProductImage(@UploadedFile() file: Express.Multer.File) {
 		if (!file) throw new BadRequestException('Not a valid file');
 
-		const hostname =
-			this.configService.get<string>('HOST_API') ?? 'http://localhost:3000/api';
+		const hostname = envs.HOST_URL ?? 'http://localhost:3000/api';
 
 		const secureURL = `${hostname}/files/product/${file.filename}`;
 

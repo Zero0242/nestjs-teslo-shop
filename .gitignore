@@ -37,3 +37,4 @@ lerna-debug.log*
 
 # SERVER SECRETS
 .env
+package-lock.json

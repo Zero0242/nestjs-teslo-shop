@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/common.module';
+import { envs } from './common/helpers';
 import { FilesModule } from './files/files.module';
 import { ProductsModule } from './products/products.module';
 
@@ -17,11 +18,11 @@ import { ProductsModule } from './products/products.module';
 		}),
 		TypeOrmModule.forRoot({
 			type: 'postgres',
-			host: process.env.DB_HOST,
-			port: +process.env.DB_PORT,
-			database: process.env.DB_NAME,
-			username: process.env.DB_USERNAME,
-			password: process.env.DB_PASSWORD,
+			host: envs.DB_HOST,
+			port: envs.DB_PORT,
+			database: envs.DB_NAME,
+			username: envs.DB_USERNAME,
+			password: envs.DB_PASSWORD,
 			// TODO: remover en builds de produccion
 			autoLoadEntities: true,
 			synchronize: true,
