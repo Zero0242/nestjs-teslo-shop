@@ -1,120 +1,54 @@
-# Docker
+<p align="center">
+  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
+</p>
 
-Para realizar el build del docker compose 
+# Proyecto Teslo Shop
 
-```bash
-docker compose build
-docker compose -f docker-compose.prod.yaml build
-```
+Seguimiento de curso de NestJS
 
-Para correr la app de un compose en especial
+> Creado en NestJS
 
-```bash
-docker-compose -f docker-compose.prod.yaml up
-```
+## DEV
 
-Para construir la imagen
+1. Clonar repositorio con `git clone`
+2. Copiar los valores de `.env.example` a `.env`
+3. Instalar los paquetes de NodeJS con `npm install`
+4. Ejecutar el proyecto con `npm run start`
 
-```bash
-docker build \
---tag <user>/<image>:<tag> \
---push .
-```
+## Requisitos
 
-Para construir la imagen con buildx
+1. Tener instalado NodeJS
+2. Base de datos postgresql o conexion a [neondb](https://neon.tech/)
 
-```bash
-docker buildx create <super-builder>
-docker buildx use <super-builder>
-docker buildx rm <super-builder>
-```
+## Scripts
 
-```bash
-docker buildx build \
---platform linux/amd64,linux/arm64 \
---tag <user>/<image>:<tag> \
---push .
-```
+Algunos scripts que pueden ser utilizados
 
-## Description
+| Comando             | Descripcion              |
+| ------------------- | ------------------------ |
+| `npm install`       | Instala las dependencias |
+| `npm run build`     | Compila la web           |
+| `npm run start:dev` | Inicia el modo debug     |
 
-- Remake de un proyecto de nestjs, para recordar las bases
+#### Otros Scripts
 
-## Dependencies
+Otros scripts que pueden usar para fines de desarrollo, (acciones de paquetes)
 
-1. **DATABASE deps**
-
-```bash
-@nestjs/typeorm typeorm pg
-```
-
-2. **NESTJS deps**
-
-```bash
-@nestjs/config
-@nestjs/serve-static
-```
-
-3. **HASHING deps**
-
-```bash
-bcrypt
-@types/bcrypt
-```
-
-4. **VALIDATION deps**
-
-```bash
-class-validator class-transformer
-```
-
-5. **JWT deps**
-
-```bash
-@nestjs/passport @nestjs/jwt
-passport passport-local passport-jwt
-@types/passport-local @types/passport-jwt
-```
-
-## Installation
-
-```bash
-$ yarn install
-```
-
-## Running the app
-
-```bash
-# development
-$ yarn run start
-
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
-```
+| Comando                                                                                      | Descripcion                          |
+| -------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `docker compose -f docker-compose.prod.yaml build`                                           | Construccion de la imagen            |
+| `docker build --tag <user>/<image>:<tag> --push .`                                           | Construccion mediante buildx         |
+| `docker buildx create <super-builder>`                                                       | BUILDX crear builder                 |
+| `docker buildx use <super-builder>`                                                          | BUILDX usar builder                  |
+| `docker buildx rm <super-builder>`                                                           | BUILDX eliminar builder              |
+| `docker buildx build --platform linux/amd64,linux/arm64 --tag <user>/<image>:<tag> --push .` | BUILDX construir y subir a dockerhub |
 
 
-## Docker Image
+## Documentacion
 
-# Imagen de un backend de nestjs
+Links de librerias utilizadas
 
-La imagen tiene estas variables
-
-| Variable | Ejemplo | Descripción |
-| --- | --- | --- |
-| PORT | 3000 | El puerto en el que va a correr la app |
-| HOST_URL | http ://localhost:3000/api| El url completo del api |
-| APP_VERSION | 1.0.0 | La version de al app |
-| STAGE | DEV | dev , prod, staging |
-| DB_HOST | localhost | host de la base de datos |
-| DB_PORT | 5432 | puerto de la base de datos |
-| DB_NAME | nest-db| nombre de la base de datos |
-| DB_USERNAME | postgres | usuario de la base de datos |
-| DB_PASSWORD | 12345 | contraseña de la base de datos |
-| JWT_SECRET | averyrandomstring | seed para el jwt |
-| JWT_DURATION | 10h | duracion del token |
-
-
-Los archivos de la app se alojan en `/app`, dentro de estas se encuentran la carpeta `public` y `static` para los archivos
+- [NestJS](https://nestjs.com)
+- [NodeJS](https://nodejs.org/en)
+  - [Single Executable Files](https://nodejs.org/api/single-executable-applications.html)
+  - [Nexe](https://github.com/nexe/nexe)
