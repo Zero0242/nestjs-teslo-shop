@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import {
 	Column,
 	CreateDateColumn,
@@ -24,6 +25,7 @@ export class User {
 	@Column('date', { nullable: true })
 	birthday: Date;
 
+	@Exclude({ toPlainOnly: true })
 	@Column('text')
 	password: string;
 
@@ -37,10 +39,4 @@ export class User {
 
 	@OneToMany(() => Product, (product) => product.user)
 	products: Product[];
-
-	// * Ayudas
-	sanitize() {
-		const { password, ...user } = this;
-		return user;
-	}
 }

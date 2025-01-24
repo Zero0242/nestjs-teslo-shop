@@ -27,7 +27,7 @@ export class AuthService {
 		const passCheck = bcrypt.compareSync(password, user.password);
 		if (!passCheck) throw new UnauthorizedException('Invalid Credentials');
 		const token = this.signToken({ id: user.id });
-		return { user: user.sanitize(), token };
+		return { user, token };
 	}
 
 	async registerUser(registerDTO: RegisterUserDTO) {
@@ -37,7 +37,7 @@ export class AuthService {
 			const user = this.usersService.createUser(registerDTO);
 			await this.usersService.saveUser(user);
 			const token = this.signToken({ id: user.id });
-			return { user: user.sanitize(), token };
+			return { user, token };
 		} catch (error) {
 			this.logger.error(error);
 			if (error.code === '23505')
@@ -58,7 +58,7 @@ export class AuthService {
 			throw new InternalServerErrorException('No se pudo actualizar');
 		}
 		return {
-			...user.sanitize(),
+			...user,
 			username: updateDTO.username ?? user.username,
 			birthday: updateDTO.birthday ?? user.birthday,
 			phone: updateDTO.phone ?? user.phone,

@@ -22,7 +22,7 @@ export class AuthController {
 	@Get('login')
 	validateUser(@GetUser() user: User) {
 		const token = this.authService.signToken({ id: user.id });
-		return { user: user.sanitize(), token };
+		return { user, token };
 	}
 
 	@Post('login')
