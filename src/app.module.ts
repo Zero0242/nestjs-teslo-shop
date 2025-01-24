@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/common.module';
 import { envs } from './common/helpers';
 import { FilesModule } from './files/files.module';
+import { MessagesModule } from './messages/messages.module';
 import { ProductsModule } from './products/products.module';
 
 @Module({
@@ -33,6 +34,7 @@ import { ProductsModule } from './products/products.module';
 		ProductsModule,
 		CommonModule,
 		FilesModule,
+		MessagesModule,
 	],
 	controllers: [],
 	providers: [],

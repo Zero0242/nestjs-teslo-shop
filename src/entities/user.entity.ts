@@ -6,6 +6,7 @@ import {
 	OneToMany,
 	PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Message } from './message.entity';
 import { Product } from './product.entity';
 
 @Entity()
@@ -18,6 +19,12 @@ export class User {
 
 	@Column('text', { unique: true })
 	email: string;
+
+	@Column({ default: false })
+	online: boolean;
+
+	@Column({ default: false })
+	isBlocked: boolean;
 
 	@Column('text', { default: '' })
 	phone: string;
@@ -39,4 +46,10 @@ export class User {
 
 	@OneToMany(() => Product, (product) => product.user)
 	products: Product[];
+
+	@OneToMany(() => Message, (message) => message.to)
+	sentMessages: Message[];
+
+	@OneToMany(() => Message, (message) => message.from)
+	receivedMessages: Message[];
 }

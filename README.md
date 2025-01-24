@@ -53,3 +53,7 @@ Links de librerias utilizadas
   - [Nexe](https://github.com/nexe/nexe)
 - [NestJS Curso Gratuito](https://bluuweb.dev/nestjs/crud-mysql.html)
 - [NestJS Scheduler](https://docs.nestjs.com/techniques/task-scheduling)
+- [NestJS - EJS engine](https://medium.com/@karahanozen/add-ejs-to-nest-js-application-c70f944d6419)
+- [Mail con EJS](https://stackoverflow.com/questions/41304922/sending-ejs-template-using-nodemailer)
+- [Nest Mailer](https://nest-modules.github.io/mailer/docs/mailer)
+- [Websocket auth](https://medium.com/wisdomcircle-product/the-best-way-to-authenticate-websockets-in-nestjs-f26e07a49353)
