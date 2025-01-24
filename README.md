@@ -4,7 +4,7 @@
 
 # Proyecto Teslo Shop
 
-Seguimiento de curso de NestJS
+Seguimiento de curso de NestJS en [Udemy](https://www.udemy.com/course/nest-framework/)
 
 > Creado en NestJS
 
