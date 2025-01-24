@@ -6,15 +6,13 @@ import {
 	Post,
 	Res,
 	UploadedFile,
-	UseInterceptors,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { diskStorage } from 'multer';
+import { MulterUpload } from 'src/common/decorators';
+import { FileType } from 'src/common/helpers';
 import { FilesService } from './files.service';
-import { fileFilter, fileRenamer } from './helpers';
 
 @ApiTags('files')
 @Controller('files')
@@ -32,15 +30,10 @@ export class FilesController {
 	}
 
 	@Post('product')
-	@UseInterceptors(
-		FileInterceptor('archivo', {
-			fileFilter: fileFilter,
-			storage: diskStorage({
-				destination: './static/products',
-				filename: fileRenamer,
-			}),
-		}),
-	)
+	@MulterUpload('archivo', {
+		destination: './static/products',
+		fileType: FileType.IMAGE,
+	})
 	uploadProductImage(@UploadedFile() file: Express.Multer.File) {
 		if (!file) throw new BadRequestException('Not a valid file');
 

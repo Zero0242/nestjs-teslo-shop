@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { CustomOrmError } from 'src/common/decorators';
 import { User } from 'src/entities';
 import { UsersService } from 'src/users';
 import { LoginUserDTO, RegisterUserDTO, UpdateUserDto } from './dto';
@@ -30,20 +31,14 @@ export class AuthService {
 		return { user, token };
 	}
 
+	@CustomOrmError('Email ya se encuentra registrado')
 	async registerUser(registerDTO: RegisterUserDTO) {
-		try {
-			const { password } = registerDTO;
-			registerDTO.password = bcrypt.hashSync(password, 10);
-			const user = this.usersService.createUser(registerDTO);
-			await this.usersService.saveUser(user);
-			const token = this.signToken({ id: user.id });
-			return { user, token };
-		} catch (error) {
-			this.logger.error(error);
-			if (error.code === '23505')
-				throw new BadRequestException('Email ya en uso');
-			throw new InternalServerErrorException('Consulte con el admin');
-		}
+		const { password } = registerDTO;
+		registerDTO.password = bcrypt.hashSync(password, 10);
+		const user = this.usersService.createUser(registerDTO);
+		await this.usersService.saveUser(user);
+		const token = this.signToken({ id: user.id });
+		return { user, token };
 	}
 
 	async updateUser(user: User, updateDTO: UpdateUserDto) {
