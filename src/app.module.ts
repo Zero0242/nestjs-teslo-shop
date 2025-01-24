@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
@@ -26,6 +27,7 @@ import { ProductsModule } from './products/products.module';
 			synchronize: true,
 			entities: [__dirname + '/**/*.entity{.ts,.js}'],
 		}),
+		ScheduleModule.forRoot(),
 		AuthModule,
 		ProductsModule,
 		CommonModule,

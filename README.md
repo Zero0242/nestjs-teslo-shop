@@ -43,7 +43,6 @@ Otros scripts que pueden usar para fines de desarrollo, (acciones de paquetes)
 | `docker buildx rm <super-builder>`                                                           | BUILDX eliminar builder              |
 | `docker buildx build --platform linux/amd64,linux/arm64 --tag <user>/<image>:<tag> --push .` | BUILDX construir y subir a dockerhub |
 
-
 ## Documentacion
 
 Links de librerias utilizadas
@@ -53,3 +52,4 @@ Links de librerias utilizadas
   - [Single Executable Files](https://nodejs.org/api/single-executable-applications.html)
   - [Nexe](https://github.com/nexe/nexe)
 - [NestJS Curso Gratuito](https://bluuweb.dev/nestjs/crud-mysql.html)
+- [NestJS Scheduler](https://docs.nestjs.com/techniques/task-scheduling)
