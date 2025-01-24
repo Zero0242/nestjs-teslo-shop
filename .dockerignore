@@ -17,3 +17,14 @@ docker-compose.prod.yaml
 .gitignore
 README.md
 .git
+
+static/products/*.jpeg
+static/uploads/*.jpeg
+
+
+static/products/*.jpg
+static/uploads/*.jpg
+static/products/*.png
+static/uploads/*.png
+static/products/*.gif
+static/uploads/*.gif

@@ -52,3 +52,4 @@ Links de librerias utilizadas
 - [NodeJS](https://nodejs.org/en)
   - [Single Executable Files](https://nodejs.org/api/single-executable-applications.html)
   - [Nexe](https://github.com/nexe/nexe)
+- [NestJS Curso Gratuito](https://bluuweb.dev/nestjs/crud-mysql.html)
