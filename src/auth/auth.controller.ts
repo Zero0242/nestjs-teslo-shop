@@ -1,68 +1,44 @@
 import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  UseGuards,
-  SetMetadata,
+	Body,
+	Controller,
+	Get,
+	HttpCode,
+	HttpStatus,
+	Post,
+	Put,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { User } from 'src/entities';
 import { AuthService } from './auth.service';
-import { CreateUserDto, LoginUserDto } from './dto';
-import { AuthGuard } from '@nestjs/passport';
-import { User } from './entities/user.entity';
-import { UserRoleGuard } from './guards/user-role.guard';
-import { RawHeader } from 'src/common/decorators/raw-headers.decorator';
-import { GetUser, Auth, RoleProtected } from './decorators';
-import { ValidRoles } from './interfaces';
+import { GetUser, UseAuth } from './decorators';
+import { LoginUserDTO, RegisterUserDTO, UpdateUserDto } from './dto';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+	constructor(private readonly authService: AuthService) {}
 
-  @Post('register')
-  registerUser(@Body() createUserDto: CreateUserDto) {
-    return this.authService.create(createUserDto);
-  }
+	@UseAuth()
+	@Get('login')
+	validateUser(@GetUser() user: User) {
+		const token = this.authService.signToken({ id: user.id });
+		return { user: user.sanitize(), token };
+	}
 
-  @Post('login')
-  loginUser(@Body() loginUserDto: LoginUserDto) {
-    return this.authService.login(loginUserDto);
-  }
+	@Post('login')
+	authenticateUser(@Body() loginDTO: LoginUserDTO) {
+		return this.authService.loginUser(loginDTO);
+	}
 
-  @Get('check-auth-status')
-  @Auth()
-  checkAuthStatus(@GetUser() user: User) {
-    return this.authService.checkAuthStatus(user);
-  }
+	@Post('register')
+	@HttpCode(HttpStatus.CREATED)
+	registerUser(@Body() registerDTO: RegisterUserDTO) {
+		return this.authService.registerUser(registerDTO);
+	}
 
-  @Get('private')
-  @UseGuards(AuthGuard())
-  testingPrivateRoute(
-    @GetUser() user: User,
-    @GetUser('email') userEmail: string,
-    @GetUser('id') id: string,
-    @RawHeader() headers: string[],
-  ) {
-    return {
-      ok: true,
-      message: 'Hola mundo private again',
-      data: user,
-      id: id,
-      userEmail: userEmail,
-      headers,
-    };
-  }
-
-  @Get('private2')
-  @RoleProtected(ValidRoles.superUser, ValidRoles.admin)
-  @UseGuards(AuthGuard(), UserRoleGuard)
-  privateRoute2(@GetUser() user: User) {
-    return { ok: true, user };
-  }
-
-  @Get('private3')
-  @Auth(ValidRoles.superUser, ValidRoles.admin)
-  privateRoute3(@GetUser() user: User) {
-    return { ok: true, user };
-  }
+	@UseAuth()
+	@Put('edit')
+	updateUser(@GetUser() user: User, @Body() updateDTO: UpdateUserDto) {
+		return this.authService.updateUser(user, updateDTO);
+	}
 }

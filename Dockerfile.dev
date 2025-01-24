@@ -1,0 +1,6 @@
+# Fase para desarrollo
+FROM node:19.2-alpine3.16 as appwatcher
+WORKDIR /app
+COPY package.json .
+RUN npm install
+CMD [ "yarn","start:dev" ]

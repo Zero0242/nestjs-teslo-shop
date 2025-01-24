@@ -1,77 +1,71 @@
 import {
-  BadRequestException,
-  ImATeapotException,
-  Injectable,
-  Logger,
-  UnauthorizedException,
+	BadRequestException,
+	Injectable,
+	InternalServerErrorException,
+	Logger,
+	UnauthorizedException,
 } from '@nestjs/common';
-import { CreateUserDto, LoginUserDto, UpdateUserDto } from './dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User } from './entities/user.entity';
-import * as bcrypt from 'bcrypt';
-import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
+import { User } from 'src/entities';
+import { UsersService } from 'src/users';
+import { LoginUserDTO, RegisterUserDTO, UpdateUserDto } from './dto';
+import { JwtPayload } from './interfaces';
 
 @Injectable()
 export class AuthService {
-  private readonly logger = new Logger('Auth');
-  constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-    private readonly jwtService: JwtService,
-  ) {}
+	private readonly logger = new Logger('Auth Service');
+	constructor(
+		private readonly usersService: UsersService,
+		private readonly jwtService: JwtService,
+	) {}
 
-  async create(createUserDto: CreateUserDto) {
-    try {
-      const { password, ...userData } = createUserDto;
-      const user = await this.userRepository.create({
-        ...userData,
-        password: bcrypt.hashSync(password, 10),
-      });
+	async loginUser(loginDTO: LoginUserDTO) {
+		const { email, password } = loginDTO;
+		const user = await this.usersService.findByEmail(email);
+		if (!user) throw new UnauthorizedException('Invalid Credentials');
+		const passCheck = bcrypt.compareSync(password, user.password);
+		if (!passCheck) throw new UnauthorizedException('Invalid Credentials');
+		const token = this.signToken({ id: user.id });
+		return { user: user.sanitize(), token };
+	}
 
-      await this.userRepository.save(user);
-      delete user.password;
-      return user;
-    } catch (error) {
-      this.handleDBErrors(error);
-    }
-  }
+	async registerUser(registerDTO: RegisterUserDTO) {
+		try {
+			const { password } = registerDTO;
+			registerDTO.password = bcrypt.hashSync(password, 10);
+			const user = this.usersService.createUser(registerDTO);
+			await this.usersService.saveUser(user);
+			const token = this.signToken({ id: user.id });
+			return { user: user.sanitize(), token };
+		} catch (error) {
+			this.logger.error(error);
+			if (error.code === '23505')
+				throw new BadRequestException('Email ya en uso');
+			throw new InternalServerErrorException('Consulte con el admin');
+		}
+	}
 
-  async login(loginUserDto: LoginUserDto) {
-    const { email, password } = loginUserDto;
-    const user = await this.userRepository.findOne({
-      where: { email },
-      select: { email: true, password: true, id: true },
-    });
+	async updateUser(user: User, updateDTO: UpdateUserDto) {
+		const values = Object.entries(updateDTO);
 
-    const isInvalid = !user || !bcrypt.compareSync(password, user.password);
+		if (values.length === 0) {
+			throw new BadRequestException('No se pudo actualizar');
+		}
+		const { id } = user;
+		const { affected = 0 } = await this.usersService.updateUser(id, updateDTO);
+		if (affected === 0) {
+			throw new InternalServerErrorException('No se pudo actualizar');
+		}
+		return {
+			...user.sanitize(),
+			username: updateDTO.username ?? user.username,
+			birthday: updateDTO.birthday ?? user.birthday,
+			phone: updateDTO.phone ?? user.phone,
+		};
+	}
 
-    if (isInvalid) throw new UnauthorizedException('Credenciales no validas');
-
-    return {
-      data: user,
-      token: this.getJwtToken({ id: user.id }),
-    };
-  }
-
-  async checkAuthStatus(user: User) {
-    return {
-      data: user,
-      token: this.getJwtToken({ id: user.id }),
-    };
-  }
-
-  private getJwtToken(payload: JwtPayload) {
-    return this.jwtService.sign(payload);
-  }
-
-  private handleDBErrors(error: any) {
-    this.logger.error(error);
-    if (error.code === '23505') {
-      throw new BadRequestException(error.detail);
-    }
-
-    throw new ImATeapotException();
-  }
+	signToken(payload: JwtPayload) {
+		return this.jwtService.sign(payload);
+	}
 }

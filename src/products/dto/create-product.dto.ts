@@ -11,7 +11,7 @@ import {
 
 export class CreateProductDto {
   @IsString()
-  @MinLength(1)
+  @MinLength(5)
   title: string;
 
   @IsNumber()
@@ -40,12 +40,12 @@ export class CreateProductDto {
   @IsArray()
   @IsOptional()
   tags: string[];
-
+  
   @IsString({ each: true })
   @IsArray()
   @IsOptional()
   images?: string[];
 
-  @IsIn(['men', 'women', 'kid', 'unisex'])
+  @IsIn(['men', 'women', 'kids', 'unisex'])
   gender: string;
 }

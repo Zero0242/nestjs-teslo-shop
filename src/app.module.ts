@@ -1,18 +1,17 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProductsModule } from './products/products.module';
-import { CommonModule } from './common/common.module';
-import { SeedModule } from './seed/seed.module';
-import { FilesModule } from './files/files.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
-import { MessagesWsModule } from './messages-ws/messages-ws.module';
+import { NotesModule } from './notes/notes.module';
+import { ProductsModule } from './products/products.module';
+import { CommonModule } from './common/common.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
@@ -23,15 +22,18 @@ import { MessagesWsModule } from './messages-ws/messages-ws.module';
       database: process.env.DB_NAME,
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
+      // TODO: remover en builds de produccion
       autoLoadEntities: true,
       synchronize: true,
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
     }),
+    AuthModule,
+    NotesModule,
     ProductsModule,
     CommonModule,
-    SeedModule,
     FilesModule,
-    AuthModule,
-    MessagesWsModule,
   ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

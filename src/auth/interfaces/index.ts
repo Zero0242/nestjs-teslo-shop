@@ -1,2 +1,2 @@
-export { JwtPayload } from './jwt-payload.interface';
-export { ValidRoles } from './valid-roles';
+export * from './jwt-payload.interface';
+export * from './valid-roles.enum';

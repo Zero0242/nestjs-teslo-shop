@@ -1,63 +1,54 @@
 import {
-  BadRequestException,
-  Controller,
-  Get,
-  Param,
-  ParseFilePipe,
-  Post,
-  Res,
-  UploadedFile,
-  UseInterceptors,
+	BadRequestException,
+	Controller,
+	Get,
+	Param,
+	Post,
+	Res,
+	UploadedFile,
+	UseInterceptors,
 } from '@nestjs/common';
-import { FilesService } from './files.service';
-import { FileInterceptor } from '@nestjs/platform-express';
-
-import { diskStorage } from 'multer';
-import { fileFilter, fileNamer } from './helpers';
-import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
+import { diskStorage } from 'multer';
+import { FilesService } from './files.service';
+import { fileFilter, fileRenamer } from './helpers';
 
+@ApiTags('files')
 @Controller('files')
 export class FilesController {
-  constructor(
-    private readonly filesService: FilesService,
-    private readonly configService: ConfigService,
-  ) {}
+	constructor(
+		private readonly filesService: FilesService,
+		private readonly configService: ConfigService,
+	) {}
 
-  @Post('product')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      fileFilter: fileFilter,
-      //limits: { fileSize: 1024 },
-      storage: diskStorage({
-        destination: './static/products',
-        filename: fileNamer,
-      }),
-    }),
-  )
-  uploadFile(
-    @UploadedFile(ParseFilePipe)
-    file: Express.Multer.File,
-  ) {
-    if (!file) {
-      throw new BadRequestException('Make sure that file is an image');
-    }
+	@Get('product/:imageName')
+	findOneImage(@Param('imageName') imageName: string, @Res() res: Response) {
+		const path = this.filesService.getStaticImage(imageName);
 
-    const secureUrl =
-      this.configService.get('HOST_API') + '/files/product/' + file.filename;
+		return res.status(200).sendFile(path);
+	}
 
-    return {
-      secureUrl: secureUrl,
-    };
-  }
+	@Post('product')
+	@UseInterceptors(
+		FileInterceptor('archivo', {
+			fileFilter: fileFilter,
+			storage: diskStorage({
+				destination: './static/products',
+				filename: fileRenamer,
+			}),
+		}),
+	)
+	uploadProductImage(@UploadedFile() file: Express.Multer.File) {
+		if (!file) throw new BadRequestException('Not a valid file');
 
-  @Get('product/:imageName')
-  findOneImage(@Res() res: Response, @Param('imageName') image: string) {
-    const path = this.filesService.getStaticProductImage(image);
-    /* res.status(403).json({
-      ok: false,
-      path: path,
-    }); */
-    res.sendFile(path);
-  }
+		const hostname =
+			this.configService.get<string>('HOST_API') ?? 'http://localhost:3000/api';
+
+		const secureURL = `${hostname}/files/product/${file.filename}`;
+
+		return { secureURL };
+	}
 }

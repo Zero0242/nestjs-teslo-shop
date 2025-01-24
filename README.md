@@ -1,25 +1,82 @@
-# **Teslo API**
+# Docker
 
-1. Configurar las variables de entorno **.env**
-2. Tener instalado node
-3. Tener instalado nest/cli y docker-desktop
-4. Levantar postgres 'Docker'
+Para realizar el build del docker compose 
 
 ```bash
-$ docker-compose up -d
+docker compose build
+docker compose -f docker-compose.prod.yaml build
 ```
 
-5. Seed de database **/api/seed**
+Para correr la app de un compose en especial
+
+```bash
+docker-compose -f docker-compose.prod.yaml up
+```
+
+Para construir la imagen
+
+```bash
+docker build \
+--tag <user>/<image>:<tag> \
+--push .
+```
+
+Para construir la imagen con buildx
+
+```bash
+docker buildx create <super-builder>
+docker buildx use <super-builder>
+docker buildx rm <super-builder>
+```
+
+```bash
+docker buildx build \
+--platform linux/amd64,linux/arm64 \
+--tag <user>/<image>:<tag> \
+--push .
+```
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- Remake de un proyecto de nestjs, para recordar las bases
 
-## Installation
+## Dependencies
+
+1. **DATABASE deps**
 
 ```bash
-$ yarn install
+@nestjs/typeorm typeorm pg
 ```
+
+2. **NESTJS deps**
+
+```bash
+@nestjs/config
+@nestjs/serve-static
+```
+
+3. **HASHING deps**
+
+```bash
+bcrypt
+@types/bcrypt
+```
+
+4. **VALIDATION deps**
+
+```bash
+class-validator class-transformer
+```
+
+5. **JWT deps**
+
+```bash
+@nestjs/passport @nestjs/jwt
+passport passport-local passport-jwt
+@types/passport-local @types/passport-jwt
+```
+
+## Installation
 
 ```bash
 $ yarn install
@@ -38,15 +95,26 @@ $ yarn run start:dev
 $ yarn run start:prod
 ```
 
-## Test
 
-```bash
-# unit tests
-$ yarn run test
+## Docker Image
 
-# e2e tests
-$ yarn run test:e2e
+# Imagen de un backend de nestjs
 
-# test coverage
-$ yarn run test:cov
-```
+La imagen tiene estas variables
+
+| Variable | Ejemplo | Descripción |
+| --- | --- | --- |
+| PORT | 3000 | El puerto en el que va a correr la app |
+| HOST_URL | http ://localhost:3000/api| El url completo del api |
+| APP_VERSION | 1.0.0 | La version de al app |
+| STAGE | DEV | dev , prod, staging |
+| DB_HOST | localhost | host de la base de datos |
+| DB_PORT | 5432 | puerto de la base de datos |
+| DB_NAME | nest-db| nombre de la base de datos |
+| DB_USERNAME | postgres | usuario de la base de datos |
+| DB_PASSWORD | 12345 | contraseña de la base de datos |
+| JWT_SECRET | averyrandomstring | seed para el jwt |
+| JWT_DURATION | 10h | duracion del token |
+
+
+Los archivos de la app se alojan en `/app`, dentro de estas se encuentran la carpeta `public` y `static` para los archivos
