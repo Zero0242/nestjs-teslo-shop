@@ -1,11 +1,10 @@
 import {
 	BadRequestException,
 	Injectable,
-	Logger,
 	NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CustomOrmError } from 'src/common/decorators';
+import { HandleError } from 'src/common/decorators';
 import { PaginationDto } from 'src/common/dtos';
 import { Product, ProductImage, User } from 'src/entities';
 import { DataSource, Repository } from 'typeorm';
@@ -14,7 +13,6 @@ import { CreateProductDto, UpdateProductDto } from './dto';
 
 @Injectable()
 export class ProductsService {
-	private readonly logger = new Logger('ProductService');
 	constructor(
 		@InjectRepository(Product)
 		private readonly productRepository: Repository<Product>,
@@ -23,7 +21,7 @@ export class ProductsService {
 		private readonly datasource: DataSource,
 	) {}
 
-	@CustomOrmError()
+	@HandleError(null, ProductsService.name)
 	async create(createProductDto: CreateProductDto, user: User) {
 		const { images = [], ...rest } = createProductDto;
 		const product = this.productRepository.create({
@@ -81,7 +79,7 @@ export class ProductsService {
 	}
 
 	// QUERY RUNNER, MODO SQL
-	@CustomOrmError()
+	@HandleError(null, ProductsService.name)
 	async update(id: string, updateProductDto: UpdateProductDto, user: User) {
 		const { images, ...partial } = updateProductDto;
 		// * Precarga el product con el id, junto a los parametros que le pasamos

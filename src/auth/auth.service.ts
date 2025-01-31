@@ -2,12 +2,11 @@ import {
 	BadRequestException,
 	Injectable,
 	InternalServerErrorException,
-	Logger,
 	UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { CustomOrmError } from 'src/common/decorators';
+import { HandleError } from 'src/common/decorators';
 import { User } from 'src/entities';
 import { UsersService } from 'src/users';
 import { LoginUserDTO, RegisterUserDTO, UpdateUserDto } from './dto';
@@ -15,7 +14,6 @@ import { JwtPayload } from './interfaces';
 
 @Injectable()
 export class AuthService {
-	private readonly logger = new Logger('Auth Service');
 	constructor(
 		private readonly usersService: UsersService,
 		private readonly jwtService: JwtService,
@@ -31,7 +29,7 @@ export class AuthService {
 		return { user, token };
 	}
 
-	@CustomOrmError('Email ya se encuentra registrado')
+	@HandleError('Email ya se encuentra registrado', AuthService.name)
 	async registerUser(registerDTO: RegisterUserDTO) {
 		const { password } = registerDTO;
 		registerDTO.password = bcrypt.hashSync(password, 10);

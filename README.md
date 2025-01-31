@@ -57,3 +57,10 @@ Links de librerias utilizadas
 - [Mail con EJS](https://stackoverflow.com/questions/41304922/sending-ejs-template-using-nodemailer)
 - [Nest Mailer](https://nest-modules.github.io/mailer/docs/mailer)
 - [Websocket auth](https://medium.com/wisdomcircle-product/the-best-way-to-authenticate-websockets-in-nestjs-f26e07a49353)
+
+#### Winston
+
+- [Logging con Wiston](https://mirzaleka.medium.com/automated-logging-in-express-js-a1f85ca6c5cd)
+- [Winston + NestJS](https://www.npmjs.com/package/nest-winston)
+- [Winston Formatos](https://dev.to/naineel12/lets-build-a-production-ready-logger-using-winston-oo4)
+- [Winston NestJS Style](https://stackoverflow.com/questions/76959383/how-to-simulate-nestjs-color-logs-with-winston-logger)
